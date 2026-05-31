@@ -44,10 +44,11 @@ The runtime folders reserve small, explicit areas for the vertical slice:
 
 `GameLifetimeScope` is the VContainer composition root for the vertical slice.
 It registers the typed `IEventBus`, the `IGameStateMachine`, the
-`IDamageService`, the `IItemDefinitionProvider`, the `IInventoryService`, the
-`IObjectiveService`, and the `GameEntryPoint`. The scope is intentionally the
-single place where runtime services are wired together, so dependencies stay
-explicit and testable.
+`IDamageService`, the `IGameInitializationService`, the
+`ISceneLoadingService`, the `IItemDefinitionProvider`, the
+`IInventoryService`, the `IObjectiveService`, and the `GameEntryPoint`. The
+scope is intentionally the single place where runtime services are wired
+together, so dependencies stay explicit and testable.
 
 `GameLifetimeScope` is a thin Unity-facing component attached to the bootstrap
 scene. It explicitly injects the scene adapters configured by the editor
@@ -55,8 +56,22 @@ bootstrap tool. Runtime services remain plain C# classes and do not discover
 each other through global singletons or scene searches.
 
 `GameEntryPoint` is registered as a VContainer entry point. When its VContainer
-start lifecycle runs, it advances the state machine from `Bootstrapping` to
-`Playing`.
+async start lifecycle runs, it awaits `IGameInitializationService` and advances
+the state machine from `Bootstrapping` to `Playing` only after initialization
+completes.
+
+## Async Initialization And Scene Flow
+
+`GameInitializationService` demonstrates a small UniTask initialization
+workflow with a cancellable non-blocking demo delay. `GameEntryPoint`
+implements VContainer's `IAsyncStartable`, so scope disposal cancels work
+through the token supplied by VContainer. Cancellation is handled without
+transitioning the game to `Playing`, while unexpected failures are logged.
+
+`SceneLoadingService` exposes Unity scene loading as an explicit
+`ISceneLoadingService` dependency and awaits the Unity `AsyncOperation` through
+UniTask. The service accepts a `CancellationToken`; it does not use coroutines
+or block the main thread.
 
 ## Initial Game State Flow
 

@@ -3,6 +3,7 @@
   "rootNamespace": "ExtractionRoom",
   "references": [
     "VContainer",
+    "UniTask",
     "Unity.InputSystem",
     "Unity.ugui",
     "LitMotion"

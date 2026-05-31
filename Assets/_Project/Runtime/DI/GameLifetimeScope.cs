@@ -34,6 +34,8 @@ namespace ExtractionRoom.DI
             builder.Register<IEventBus, EventBus>(Lifetime.Singleton);
             builder.Register<IGameStateMachine, GameStateMachine>(Lifetime.Singleton);
             builder.Register<IDamageService, DamageService>(Lifetime.Singleton);
+            builder.Register<IGameInitializationService, GameInitializationService>(Lifetime.Singleton);
+            builder.Register<ISceneLoadingService, SceneLoadingService>(Lifetime.Singleton);
             builder.RegisterInstance<IItemDefinitionProvider>(new ItemDefinitionProvider(itemDefinitions));
             builder.Register<IInventoryService>(
                 resolver => new InventoryService(

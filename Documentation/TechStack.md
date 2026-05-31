@@ -12,6 +12,7 @@
 - VContainer `1.18.0`
 - R3 `1.3.1`
 - LitMotion `2.0.1`
+- UniTask `2.5.10`
 - NuGetForUnity `4.5.0` for restoring the R3 core package
 
 ## Unity CLI Setup
@@ -36,6 +37,7 @@ The vertical slice uses:
 - R3 for reactive state observation and UI bindings
 - UGUI for the compact runtime HUD
 - LitMotion for lightweight presentation-layer tweening
+- UniTask for selective cancellable async workflows
 
 UGUI is sufficient for this prototype's small set of runtime labels and slots,
 ships with Unity, and keeps the placeholder scene easy to inspect. A larger
@@ -50,17 +52,17 @@ LitMotion is limited to presentation feedback: UI fades, slot pulses, damage
 feedback, and generator activation feedback. Tween completion is never used to
 advance objectives, update inventory, apply damage, or transition game state.
 
+UniTask is used selectively where asynchronous control flow adds value:
+initialization and scene loading. These workflows accept `CancellationToken`
+and run through Unity's player loop without blocking the main thread. Routine
+frame updates and synchronous gameplay calls remain synchronous.
+
+UniTask is installed from the official UPM source:
+`https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.10`.
+
 R3 core binaries are restored from `Packages/nuget-packages/packages.config`.
 Run `nugetforunity restore .` before opening Unity on a fresh checkout when the
 CLI tool is installed.
-
-## Planned Runtime Libraries
-
-The vertical slice is intended to add:
-
-- UniTask for cancellable async workflows where async adds value
-
-Their package sources and versions will be recorded when integration begins.
 
 ## Constraints
 

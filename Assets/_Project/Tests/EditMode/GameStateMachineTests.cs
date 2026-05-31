@@ -1,3 +1,5 @@
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using ExtractionRoom.Core;
 using ExtractionRoom.DI;
 using ExtractionRoom.Objectives;
@@ -60,16 +62,53 @@ namespace ExtractionRoom.Tests.EditMode
         }
 
         [Test]
-        public void GameEntryPoint_Start_TransitionsToPlaying()
+        public async System.Threading.Tasks.Task GameEntryPoint_StartAsync_TransitionsToPlayingAfterInitialization()
         {
             using var eventBus = new EventBus();
             using var stateMachine = new GameStateMachine(eventBus);
             using var objectiveService = new ObjectiveService(eventBus, stateMachine);
-            var entryPoint = new GameEntryPoint(stateMachine, objectiveService);
+            var initializationService = new ControlledInitializationService();
+            var entryPoint = new GameEntryPoint(stateMachine, initializationService, objectiveService);
 
-            entryPoint.Start();
+            var initialization = entryPoint.StartAsync().AsTask();
 
+            Assert.That(stateMachine.CurrentState, Is.EqualTo(GameState.Bootstrapping));
+            initializationService.Complete();
+            await initialization;
             Assert.That(stateMachine.CurrentState, Is.EqualTo(GameState.Playing));
+        }
+
+        [Test]
+        public async System.Threading.Tasks.Task GameEntryPoint_StartAsync_WhenCancelled_RemainsBootstrapping()
+        {
+            using var eventBus = new EventBus();
+            using var stateMachine = new GameStateMachine(eventBus);
+            using var objectiveService = new ObjectiveService(eventBus, stateMachine);
+            using var cancellation = new CancellationTokenSource();
+            var initializationService = new ControlledInitializationService();
+            var entryPoint = new GameEntryPoint(stateMachine, initializationService, objectiveService);
+
+            var initialization = entryPoint.StartAsync(cancellation.Token).AsTask();
+            cancellation.Cancel();
+            initializationService.Complete();
+            await initialization;
+
+            Assert.That(stateMachine.CurrentState, Is.EqualTo(GameState.Bootstrapping));
+        }
+
+        private sealed class ControlledInitializationService : IGameInitializationService
+        {
+            private readonly UniTaskCompletionSource completionSource = new();
+
+            public async UniTask InitializeAsync(CancellationToken cancellationToken)
+            {
+                await completionSource.Task.AttachExternalCancellation(cancellationToken);
+            }
+
+            public void Complete()
+            {
+                completionSource.TrySetResult();
+            }
         }
     }
 }

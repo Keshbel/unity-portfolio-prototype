@@ -2,7 +2,8 @@
   "name": "Project.Tests.EditMode",
   "rootNamespace": "ExtractionRoom.Tests.EditMode",
   "references": [
-    "Project.Runtime"
+    "Project.Runtime",
+    "UniTask"
   ],
   "includePlatforms": [
     "Editor"

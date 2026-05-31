@@ -11,13 +11,13 @@ not a full game.
 
 ## Planned Vertical Slice
 
-- [ ] Add the remaining approved third-party runtime libraries
+- [x] Add the remaining approved third-party runtime libraries
 - [x] Create the VContainer composition root
 - [x] Implement a small, testable inventory domain model
 - [x] Add a minimal extraction objective flow
 - [x] Add a placeholder player and interaction loop
 - [x] Bind a small UGUI HUD through R3 Presenter or Binder classes
-- [ ] Add one useful cancellable UniTask initialization flow
+- [x] Add one useful cancellable UniTask initialization flow
 - [x] Add presentation-only LitMotion feedback
 - [x] Add focused EditMode tests and minimal PlayMode coverage
 - [x] Add a small placeholder-scene bootstrap tool

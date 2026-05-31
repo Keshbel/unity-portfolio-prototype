@@ -36,6 +36,10 @@ death event from its owned `HealthModel` transitions the game state to `Lost`.
 The explicit enemy AI state machine is also covered in EditMode. Tests verify
 idle and patrol transitions, player detection, entry into attack range, damage
 application through `DamageService`, and stopping attacks after player death.
+Async entry-point tests verify that the game remains in `Bootstrapping` until
+initialization completes and that cancellation does not transition to
+`Playing`. Scene-loading validation rejects missing scene names before a Unity
+load operation is started.
 The placeholder scene is also suitable for a short Unity CLI smoke check of
 movement, pickup interaction, and reactive HUD visibility.
 
