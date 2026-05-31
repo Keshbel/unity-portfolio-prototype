@@ -19,12 +19,17 @@ namespace ExtractionRoom.UI
             baseScale = transform.localScale;
         }
 
+        private void Awake()
+        {
+            baseScale = transform.localScale;
+        }
+
         public void Display(string itemId, int count, bool pulse)
         {
             label.text = $"{itemId} x{count}";
             if (pulse)
             {
-                PresentationTweenHelper.PulseScale(this, transform, ref pulseHandle, baseScale, 1.12f, 0.24f);
+                PresentationTweenHelper.PulseScale(this, transform, ref pulseHandle, baseScale, 1.35f, 0.42f);
             }
         }
 

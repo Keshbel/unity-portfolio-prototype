@@ -26,8 +26,8 @@ namespace ExtractionRoom.Presentation
         public void Play()
         {
             CaptureBaseValuesIfNeeded();
-            PresentationTweenHelper.FlashColor(this, label, ref colorHandle, baseColor, damageColor, 0.28f);
-            PresentationTweenHelper.PulseScale(this, transform, ref scaleHandle, baseScale, 1.08f, 0.28f);
+            PresentationTweenHelper.FlashColor(this, label, ref colorHandle, baseColor, damageColor, 0.45f);
+            PresentationTweenHelper.PulseScale(this, transform, ref scaleHandle, baseScale, 1.18f, 0.45f);
         }
 
         private void Awake()

@@ -28,7 +28,7 @@ namespace ExtractionRoom.Presentation
 
         private void Play()
         {
-            PresentationTweenHelper.PulseScale(this, transform, ref pulseHandle, baseScale, 1.12f, 0.36f);
+            PresentationTweenHelper.PulseScale(this, transform, ref pulseHandle, baseScale, 1.25f, 0.6f);
         }
     }
 }
