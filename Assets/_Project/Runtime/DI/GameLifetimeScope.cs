@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ExtractionRoom.AI;
 using ExtractionRoom.Core;
 using ExtractionRoom.Gameplay;
 using ExtractionRoom.Inventory;
@@ -78,6 +79,17 @@ namespace ExtractionRoom.DI
                     extractionZone.Construct(eventBus, objectiveService);
                 }
 
+            }
+
+            foreach (var root in sceneInjectionRoots)
+            {
+                foreach (var enemy in root.GetComponentsInChildren<EnemyAIController>(true))
+                {
+                    enemy.Construct(
+                        resolver.Resolve<IDamageService>(),
+                        eventBus,
+                        GetComponentFromSceneRoots<PlayerHealthBinder>());
+                }
             }
 
             foreach (var root in sceneInjectionRoots)

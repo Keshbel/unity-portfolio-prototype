@@ -4,7 +4,7 @@
 
 The repository contains the initial dependency injection foundation, small
 health, damage, inventory, and objective domain models, a placeholder playable
-scene, and a reactive UGUI HUD.
+scene, an explicit enemy AI state machine, and a reactive UGUI HUD.
 
 ## Intended Boundaries
 
@@ -139,10 +139,10 @@ event.
 ## Placeholder Scene Tooling
 
 `ExtractionRoom/BootstrapPrototypeScene` creates the small placeholder room,
-item configuration assets, dependency-injection roots, a simple UGUI HUD, and
-the build-settings entry. It uses Unity primitives and built-in UGUI resources
-only. It is intentionally an editor bootstrap utility rather than production
-level-authoring infrastructure.
+item and enemy configuration assets, dependency-injection roots, a simple enemy
+with patrol points, a simple UGUI HUD, and the build-settings entry. It uses
+Unity primitives and built-in UGUI resources only. It is intentionally an
+editor bootstrap utility rather than production level-authoring infrastructure.
 
 ## Reactive UGUI HUD
 
@@ -176,6 +176,24 @@ it observes `GeneratorActivatedEvent`.
 These effects are optional presentation feedback. Domain services, gameplay
 models, and the game-state machine do not reference LitMotion. No objective,
 damage, inventory, or state transition waits for a tween callback.
+
+## Enemy AI State Machine
+
+The placeholder enemy uses an explicit `EnemyStateMachine` with small
+`EnemyIdleState`, `EnemyPatrolState`, `EnemyChaseState`, and `EnemyAttackState`
+classes. Each state owns one readable branch of the behavior flow. For this
+single-enemy prototype, explicit states are easier to inspect and test than a
+behavior-tree framework.
+
+`EnemyConfig` is a `ScriptableObject` asset containing tuning values only:
+health, movement speed, ranges, damage, cooldown, and patrol wait time. Mutable
+state such as the current patrol point and movement destination lives in the
+plain C# `EnemyRuntimeState`.
+
+`EnemyAIController` is the thin Unity adapter. It forwards positions and frame
+time into the state machine, then applies the requested movement to its
+transform. Attacks call `IDamageService` against the player health model. The
+enemy does not reference UI, objective state, or global singletons.
 
 ## Namespace Convention
 

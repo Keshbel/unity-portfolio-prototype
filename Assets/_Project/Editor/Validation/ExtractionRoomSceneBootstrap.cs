@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ExtractionRoom.AI;
 using ExtractionRoom.DI;
 using ExtractionRoom.Gameplay;
 using ExtractionRoom.Interaction;
@@ -18,11 +19,13 @@ namespace ExtractionRoom.Editor.Validation
     {
         private const string ScenePath = "Assets/_Project/Scenes/ExtractionRoom.unity";
         private const string ConfigFolder = "Assets/_Project/Configs/Items";
+        private const string AiConfigFolder = "Assets/_Project/Configs/AI";
 
         [MenuItem("ExtractionRoom/BootstrapPrototypeScene")]
         public static void Bootstrap()
         {
             EnsureFolder("Assets/_Project/Configs", "Items");
+            EnsureFolder("Assets/_Project/Configs", "AI");
 
             var definitions = new[]
             {
@@ -33,6 +36,7 @@ namespace ExtractionRoom.Editor.Validation
 
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var injectionRoots = new List<GameObject>();
+            var enemyConfig = GetOrCreateEnemyConfig();
 
             CreateFloor();
             CreateLight();
@@ -43,6 +47,7 @@ namespace ExtractionRoom.Editor.Validation
             CreateFusePickup(new Vector3(-2f, 0.5f, 7f), injectionRoots);
             CreateGenerator(injectionRoots);
             CreateExtractionZone(injectionRoots);
+            CreateEnemy(enemyConfig, injectionRoots);
             CreateHud(injectionRoots);
 
             var compositionRoot = new GameObject("CompositionRoot");
@@ -54,6 +59,21 @@ namespace ExtractionRoom.Editor.Validation
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Selection.activeGameObject = compositionRoot;
+        }
+
+        private static EnemyConfig GetOrCreateEnemyConfig()
+        {
+            var assetPath = $"{AiConfigFolder}/BasicEnemy.asset";
+            var config = AssetDatabase.LoadAssetAtPath<EnemyConfig>(assetPath);
+            if (config == null)
+            {
+                config = ScriptableObject.CreateInstance<EnemyConfig>();
+                AssetDatabase.CreateAsset(config, assetPath);
+            }
+
+            config.Initialize(50, 2.5f, 6f, 1.5f, 10, 1f, 1f);
+            EditorUtility.SetDirty(config);
+            return config;
         }
 
         private static ItemDefinition GetOrCreateDefinition(
@@ -160,6 +180,33 @@ namespace ExtractionRoom.Editor.Validation
             zone.AddComponent<ExtractionZone>();
             SetColor(zone, new Color(0.15f, 0.85f, 0.95f));
             injectionRoots.Add(zone);
+        }
+
+        private static void CreateEnemy(EnemyConfig config, ICollection<GameObject> injectionRoots)
+        {
+            var enemy = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            enemy.name = "Enemy";
+            enemy.transform.position = new Vector3(5f, 1f, 6f);
+            SetColor(enemy, new Color(0.85f, 0.2f, 0.2f));
+
+            var patrolRoot = new GameObject("Enemy Patrol Points");
+            var patrolPoints = new[]
+            {
+                CreatePatrolPoint("Patrol Point 1", patrolRoot.transform, new Vector3(5f, 0f, 4f)),
+                CreatePatrolPoint("Patrol Point 2", patrolRoot.transform, new Vector3(5f, 0f, 11f))
+            };
+
+            var controller = enemy.AddComponent<EnemyAIController>();
+            controller.Configure(config, patrolPoints);
+            injectionRoots.Add(enemy);
+        }
+
+        private static Transform CreatePatrolPoint(string name, Transform parent, Vector3 position)
+        {
+            var point = new GameObject(name);
+            point.transform.SetParent(parent);
+            point.transform.position = position;
+            return point.transform;
         }
 
         private static void CreateHud(ICollection<GameObject> injectionRoots)

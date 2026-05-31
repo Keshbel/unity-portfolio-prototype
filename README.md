@@ -27,6 +27,8 @@ documentation.
   player health binder
 - Reactive UGUI HUD: View + Presenter bindings for player health, objectives,
   inventory slots, interaction prompts, and win or lose state
+- Enemy AI State Machine: one placeholder enemy with explicit idle, patrol,
+  chase, and attack states
 
 ## Technical Highlights
 
