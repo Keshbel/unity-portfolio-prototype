@@ -11,8 +11,8 @@ organization in a compact vertical slice.
 
 The current version is a compact playable engineering slice. It defines the
 project structure, assembly boundaries, dependency injection services, domain
-models, a placeholder gameplay scene, and project documentation. UI has not
-been implemented yet.
+models, a placeholder gameplay scene, a reactive UGUI HUD, and project
+documentation.
 
 ## Implemented Features
 
@@ -25,6 +25,8 @@ been implemented yet.
 - Player and Interaction System: CharacterController movement, raycast
   interactions, item pickups, generator activation, extraction trigger, and a
   player health binder
+- Reactive UGUI HUD: View + Presenter bindings for player health, objectives,
+  inventory slots, interaction prompts, and win or lose state
 
 ## Technical Highlights
 
@@ -32,6 +34,7 @@ been implemented yet.
 - Testable plain C# game state machine with R3 observable state
 - Typed event-driven architecture foundation
 - Thin Unity-facing interaction adapters wired through dependency injection
+- R3-driven UGUI presenters with passive Views and owned subscription cleanup
 
 ## Project Documentation
 

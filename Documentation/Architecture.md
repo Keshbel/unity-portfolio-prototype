@@ -3,8 +3,8 @@
 ## Current State
 
 The repository contains the initial dependency injection foundation, small
-health, damage, inventory, and objective domain models, and a placeholder
-playable scene. UI flows have not been implemented.
+health, damage, inventory, and objective domain models, a placeholder playable
+scene, and a reactive UGUI HUD.
 
 ## Intended Boundaries
 
@@ -139,9 +139,27 @@ event.
 ## Placeholder Scene Tooling
 
 `ExtractionRoom/BootstrapPrototypeScene` creates the small placeholder room,
-item configuration assets, dependency-injection roots, and build-settings
-entry. It uses Unity primitives only and is intentionally an editor bootstrap
-utility rather than production level-authoring infrastructure.
+item configuration assets, dependency-injection roots, a simple UGUI HUD, and
+the build-settings entry. It uses Unity primitives and built-in UGUI resources
+only. It is intentionally an editor bootstrap utility rather than production
+level-authoring infrastructure.
+
+## Reactive UGUI HUD
+
+The HUD uses a small View + Presenter split. `HealthView`, `ObjectiveView`,
+`InventoryView`, `InteractionPromptView`, and `EndGameView` are passive UGUI
+components. They expose display methods and serialized widget references, but
+they do not mutate gameplay services or decide when game rules have completed.
+
+`HudPresenter` owns R3 subscriptions for player health, inventory snapshots,
+objective text, and interaction prompts. `GameStatePresenter` observes the
+game-state machine and selects the win or lose presentation. The presenters
+dispose their subscriptions when the owning `HudView` is destroyed.
+
+`GameLifetimeScope` explicitly binds the scene HUD after the player-facing
+adapters have been configured. This keeps service dependencies visible at the
+composition root and avoids global singletons, scene searches, and gameplay
+logic inside UGUI Views.
 
 ## Namespace Convention
 

@@ -4,10 +4,12 @@ using ExtractionRoom.Gameplay;
 using ExtractionRoom.Interaction;
 using ExtractionRoom.Items;
 using ExtractionRoom.Player;
+using ExtractionRoom.UI;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace ExtractionRoom.Editor.Validation
 {
@@ -40,6 +42,7 @@ namespace ExtractionRoom.Editor.Validation
             CreateFusePickup(new Vector3(-2f, 0.5f, 7f), injectionRoots);
             CreateGenerator(injectionRoots);
             CreateExtractionZone(injectionRoots);
+            CreateHud(injectionRoots);
 
             var compositionRoot = new GameObject("CompositionRoot");
             var lifetimeScope = compositionRoot.AddComponent<GameLifetimeScope>();
@@ -157,9 +160,156 @@ namespace ExtractionRoom.Editor.Validation
             injectionRoots.Add(zone);
         }
 
+        private static void CreateHud(ICollection<GameObject> injectionRoots)
+        {
+            var canvasObject = new GameObject("HUD", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+            var canvas = canvasObject.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvasObject.GetComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            canvasObject.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920f, 1080f);
+
+            var hudView = canvasObject.AddComponent<HudView>();
+            var healthView = CreateTextView<HealthView>(
+                canvasObject.transform,
+                "Health",
+                new Vector2(20f, -20f),
+                TextAnchor.UpperLeft,
+                new Vector2(360f, 48f));
+            var objectiveView = CreateTextView<ObjectiveView>(
+                canvasObject.transform,
+                "Objective",
+                new Vector2(20f, -76f),
+                TextAnchor.UpperLeft,
+                new Vector2(900f, 48f));
+            var inventoryView = CreateInventoryView(canvasObject.transform);
+            var interactionPromptView = CreateTextView<InteractionPromptView>(
+                canvasObject.transform,
+                "Interaction Prompt",
+                new Vector2(0f, 120f),
+                TextAnchor.MiddleCenter,
+                new Vector2(720f, 56f),
+                centered: true);
+            var endGameView = CreateTextView<EndGameView>(
+                canvasObject.transform,
+                "End Game",
+                Vector2.zero,
+                TextAnchor.MiddleCenter,
+                new Vector2(1000f, 120f),
+                fontSize: 52,
+                centered: true);
+
+            hudView.Configure(healthView, objectiveView, inventoryView, interactionPromptView, endGameView);
+            injectionRoots.Add(canvasObject);
+        }
+
+        private static InventoryView CreateInventoryView(Transform parent)
+        {
+            var inventoryObject = CreateUiObject("Inventory", parent);
+            SetTopLeft(inventoryObject.GetComponent<RectTransform>(), new Vector2(20f, -140f), new Vector2(420f, 240f));
+            var inventoryView = inventoryObject.AddComponent<InventoryView>();
+            var slotViews = new InventorySlotView[5];
+
+            for (var index = 0; index < slotViews.Length; index++)
+            {
+                var slotObject = CreateUiObject($"Inventory Slot {index + 1}", inventoryObject.transform);
+                SetTopLeft(slotObject.GetComponent<RectTransform>(), new Vector2(0f, -index * 42f), new Vector2(360f, 36f));
+                var text = AddText(slotObject, 24, TextAnchor.MiddleLeft);
+                var slotView = slotObject.AddComponent<InventorySlotView>();
+                slotView.Configure(text);
+                slotViews[index] = slotView;
+            }
+
+            inventoryView.Configure(slotViews);
+            return inventoryView;
+        }
+
+        private static T CreateTextView<T>(
+            Transform parent,
+            string name,
+            Vector2 anchoredPosition,
+            TextAnchor alignment,
+            Vector2 size,
+            int fontSize = 28,
+            bool centered = false)
+            where T : MonoBehaviour
+        {
+            var viewObject = CreateUiObject(name, parent);
+            var rectTransform = viewObject.GetComponent<RectTransform>();
+            if (centered)
+            {
+                SetCentered(rectTransform, anchoredPosition, size);
+            }
+            else
+            {
+                SetTopLeft(rectTransform, anchoredPosition, size);
+            }
+
+            var text = AddText(viewObject, fontSize, alignment);
+            var view = viewObject.AddComponent<T>();
+            switch (view)
+            {
+                case HealthView healthView:
+                    healthView.Configure(text);
+                    break;
+                case ObjectiveView objectiveView:
+                    objectiveView.Configure(text);
+                    break;
+                case InteractionPromptView interactionPromptView:
+                    interactionPromptView.Configure(text);
+                    break;
+                case EndGameView endGameView:
+                    endGameView.Configure(text);
+                    break;
+            }
+
+            return view;
+        }
+
+        private static GameObject CreateUiObject(string name, Transform parent)
+        {
+            var gameObject = new GameObject(name, typeof(RectTransform));
+            gameObject.transform.SetParent(parent, false);
+            return gameObject;
+        }
+
+        private static Text AddText(GameObject gameObject, int fontSize, TextAnchor alignment)
+        {
+            var text = gameObject.AddComponent<Text>();
+            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.fontSize = fontSize;
+            text.alignment = alignment;
+            text.color = Color.white;
+            text.horizontalOverflow = HorizontalWrapMode.Overflow;
+            text.verticalOverflow = VerticalWrapMode.Overflow;
+            return text;
+        }
+
+        private static void SetTopLeft(RectTransform rectTransform, Vector2 anchoredPosition, Vector2 size)
+        {
+            rectTransform.anchorMin = Vector2.up;
+            rectTransform.anchorMax = Vector2.up;
+            rectTransform.pivot = Vector2.up;
+            rectTransform.anchoredPosition = anchoredPosition;
+            rectTransform.sizeDelta = size;
+        }
+
+        private static void SetCentered(RectTransform rectTransform, Vector2 anchoredPosition, Vector2 size)
+        {
+            rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+            rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            rectTransform.pivot = new Vector2(0.5f, 0.5f);
+            rectTransform.anchoredPosition = anchoredPosition;
+            rectTransform.sizeDelta = size;
+        }
+
         private static void SetColor(GameObject gameObject, Color color)
         {
-            gameObject.GetComponent<Renderer>().material.color = color;
+            var renderer = gameObject.GetComponent<Renderer>();
+            var material = new Material(renderer.sharedMaterial)
+            {
+                color = color
+            };
+            renderer.sharedMaterial = material;
         }
 
         private static void EnsureFolder(string parentFolder, string folderName)

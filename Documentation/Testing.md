@@ -33,7 +33,7 @@ progress, generator activation, extraction completion, and the final
 PlayMode coverage verifies the Unity-facing player health binder: a player
 death event from its owned `HealthModel` transitions the game state to `Lost`.
 The placeholder scene is also suitable for a short Unity CLI smoke check of
-movement and pickup interaction.
+movement, pickup interaction, and reactive HUD visibility.
 
 ## Commands
 

@@ -16,7 +16,7 @@ not a full game.
 - [x] Implement a small, testable inventory domain model
 - [x] Add a minimal extraction objective flow
 - [x] Add a placeholder player and interaction loop
-- [ ] Bind a small UGUI HUD through R3 Presenter or Binder classes
+- [x] Bind a small UGUI HUD through R3 Presenter or Binder classes
 - [ ] Add one useful cancellable UniTask initialization flow
 - [ ] Add presentation-only LitMotion feedback
 - [x] Add focused EditMode tests and minimal PlayMode coverage

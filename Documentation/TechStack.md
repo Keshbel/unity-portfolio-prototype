@@ -33,6 +33,16 @@ The vertical slice uses:
 
 - VContainer for dependency injection and composition roots
 - R3 for reactive state observation and UI bindings
+- UGUI for the compact runtime HUD
+
+UGUI is sufficient for this prototype's small set of runtime labels and slots,
+ships with Unity, and keeps the placeholder scene easy to inspect. A larger
+production interface could justify a more elaborate UI approach, but it would
+add unnecessary surface area here.
+
+R3 is used where state observation is useful: domain services expose read-only
+reactive properties and presenter classes subscribe to update passive Views.
+Gameplay rules remain explicit C# logic rather than reactive pipelines.
 
 R3 core binaries are restored from `Packages/nuget-packages/packages.config`.
 Run `nugetforunity restore .` before opening Unity on a fresh checkout when the

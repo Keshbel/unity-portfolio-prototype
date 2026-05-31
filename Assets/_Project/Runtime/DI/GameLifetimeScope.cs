@@ -5,6 +5,8 @@ using ExtractionRoom.Inventory;
 using ExtractionRoom.Items;
 using ExtractionRoom.Objectives;
 using ExtractionRoom.Player;
+using ExtractionRoom.Interaction;
+using ExtractionRoom.UI;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -68,6 +70,66 @@ namespace ExtractionRoom.DI
                 foreach (var extractionZone in root.GetComponentsInChildren<ExtractionZone>(true))
                 {
                     extractionZone.Construct(eventBus, objectiveService);
+                }
+
+            }
+
+            foreach (var root in sceneInjectionRoots)
+            {
+                foreach (var hudView in root.GetComponentsInChildren<HudView>(true))
+                {
+                    ConfigureHud(hudView, gameStateMachine, inventoryService, objectiveService);
+                }
+            }
+        }
+
+        private void ConfigureHud(
+            HudView hudView,
+            IGameStateMachine gameStateMachine,
+            IInventoryService inventoryService,
+            IObjectiveService objectiveService)
+        {
+            var playerHealthBinder = GetComponentFromSceneRoots<PlayerHealthBinder>();
+            var interactionController = GetComponentFromSceneRoots<InteractionController>();
+            var presenters = new CompositeDisposable(
+                new HudPresenter(
+                    playerHealthBinder.Health,
+                    inventoryService,
+                    objectiveService,
+                    interactionController,
+                    hudView),
+                new GameStatePresenter(gameStateMachine, hudView.EndGameView));
+            hudView.Bind(presenters);
+        }
+
+        private T GetComponentFromSceneRoots<T>() where T : Component
+        {
+            foreach (var root in sceneInjectionRoots)
+            {
+                var component = root.GetComponentInChildren<T>(true);
+                if (component != null)
+                {
+                    return component;
+                }
+            }
+
+            throw new MissingReferenceException($"Scene adapter {typeof(T).Name} is not configured.");
+        }
+
+        private sealed class CompositeDisposable : System.IDisposable
+        {
+            private readonly System.IDisposable[] disposables;
+
+            public CompositeDisposable(params System.IDisposable[] disposables)
+            {
+                this.disposables = disposables;
+            }
+
+            public void Dispose()
+            {
+                foreach (var disposable in disposables)
+                {
+                    disposable.Dispose();
                 }
             }
         }

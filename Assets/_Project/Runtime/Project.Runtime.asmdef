@@ -3,7 +3,8 @@
   "rootNamespace": "ExtractionRoom",
   "references": [
     "VContainer",
-    "Unity.InputSystem"
+    "Unity.InputSystem",
+    "Unity.ugui"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
