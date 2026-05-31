@@ -7,6 +7,21 @@
 - Universal Render Pipeline
 - UGUI
 - Unity Test Framework
+- `com.akiojin.unity-cli-bridge` for local Unity Editor automation
+
+## Unity CLI Setup
+
+The Unity-side bridge is installed through `Packages/manifest.json`. The
+`unity-cli` binary is a developer-machine tool and is not committed to the
+repository.
+
+After opening the project in Unity, verify the local connection:
+
+```text
+unity-cli system ping
+```
+
+The default endpoint is `localhost:6400`.
 
 ## Planned Runtime Libraries
 

@@ -39,3 +39,17 @@ Assets/_Project/
 
 Generated Unity folders such as `Library/`, `Temp/`, `Logs/`, and
 `UserSettings/` are excluded from version control.
+
+## Unity CLI
+
+The project includes the `com.akiojin.unity-cli-bridge` Unity package for
+Editor automation over a local TCP connection.
+
+Install the `unity-cli` binary separately on each development machine, open the
+project in Unity, and verify the connection:
+
+```text
+unity-cli system ping
+```
+
+The bridge listens on `localhost:6400` by default.
