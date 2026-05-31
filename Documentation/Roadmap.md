@@ -13,13 +13,14 @@ not a full game.
 
 - [ ] Add the remaining approved third-party runtime libraries
 - [x] Create the VContainer composition root
-- [ ] Implement small, testable interaction and inventory domain models
-- [ ] Add a minimal extraction objective flow
+- [x] Implement a small, testable inventory domain model
+- [x] Add a minimal extraction objective flow
+- [x] Add a placeholder player and interaction loop
 - [ ] Bind a small UGUI HUD through R3 Presenter or Binder classes
 - [ ] Add one useful cancellable UniTask initialization flow
 - [ ] Add presentation-only LitMotion feedback
-- [ ] Add focused EditMode tests and minimal PlayMode coverage
-- [ ] Add a small editor validation tool
+- [x] Add focused EditMode tests and minimal PlayMode coverage
+- [x] Add a small placeholder-scene bootstrap tool
 
 Scope should remain compact. New systems should exist only when they strengthen
 the engineering demonstration.

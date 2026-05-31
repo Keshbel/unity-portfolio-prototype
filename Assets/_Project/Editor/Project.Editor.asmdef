@@ -2,7 +2,8 @@
   "name": "Project.Editor",
   "rootNamespace": "ExtractionRoom.Editor",
   "references": [
-    "Project.Runtime"
+    "Project.Runtime",
+    "VContainer"
   ],
   "includePlatforms": [
     "Editor"

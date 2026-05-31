@@ -30,10 +30,21 @@ Objective EditMode tests drive typed domain events directly. They verify fuse
 progress, generator activation, extraction completion, and the final
 `Playing -> Won` game-state transition without loading a scene.
 
+PlayMode coverage verifies the Unity-facing player health binder: a player
+death event from its owned `HealthModel` transitions the game state to `Lost`.
+The placeholder scene is also suitable for a short Unity CLI smoke check of
+movement and pickup interaction.
+
 ## Commands
 
 Run EditMode tests through Unity CLI:
 
 ```text
 unity-cli tool call run_tests --json "{\"testMode\":\"EditMode\",\"filter\":\"ExtractionRoom.Tests.EditMode\"}"
+```
+
+Run project PlayMode tests through Unity CLI:
+
+```text
+unity-cli tool call run_tests --json "{\"testMode\":\"PlayMode\",\"filter\":\"ExtractionRoom.Tests.PlayMode\"}"
 ```

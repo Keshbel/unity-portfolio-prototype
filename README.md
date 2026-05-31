@@ -9,11 +9,10 @@ a complete game. The goal is to demonstrate clean architecture, testability,
 dependency injection, reactive UI bindings, async workflows, and clean project
 organization in a compact vertical slice.
 
-The current version is an engineering foundation. It defines the initial folder
-structure, assembly boundaries, namespace roots, core dependency injection
-services, and project documentation. Gameplay features, scenes, and UI have not
-been implemented yet beyond the initial health, damage, inventory, and
-objective domain models.
+The current version is a compact playable engineering slice. It defines the
+project structure, assembly boundaries, dependency injection services, domain
+models, a placeholder gameplay scene, and project documentation. UI has not
+been implemented yet.
 
 ## Implemented Features
 
@@ -23,12 +22,16 @@ objective domain models.
   rules and ScriptableObject-backed item configuration
 - Objective System: event-driven extraction flow from fuse collection through
   generator activation to extraction completion
+- Player and Interaction System: CharacterController movement, raycast
+  interactions, item pickups, generator activation, extraction trigger, and a
+  player health binder
 
 ## Technical Highlights
 
 - VContainer composition root with explicit service registration
 - Testable plain C# game state machine with R3 observable state
 - Typed event-driven architecture foundation
+- Thin Unity-facing interaction adapters wired through dependency injection
 
 ## Project Documentation
 

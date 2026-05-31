@@ -5,6 +5,7 @@
 - Unity `6000.3.11f1`
 - C#
 - Universal Render Pipeline
+- Unity Input System
 - UGUI
 - Unity Test Framework
 - `com.akiojin.unity-cli-bridge` for local Unity Editor automation

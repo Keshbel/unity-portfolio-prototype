@@ -2,9 +2,9 @@
 
 ## Current State
 
-The repository contains the initial dependency injection foundation and small
-health, damage, inventory, and objective domain models. Scene wiring, UI flows,
-and Unity-facing gameplay adapters have not been implemented.
+The repository contains the initial dependency injection foundation, small
+health, damage, inventory, and objective domain models, and a placeholder
+playable scene. UI flows have not been implemented.
 
 ## Intended Boundaries
 
@@ -49,9 +49,10 @@ It registers the typed `IEventBus`, the `IGameStateMachine`, the
 single place where runtime services are wired together, so dependencies stay
 explicit and testable.
 
-`GameLifetimeScope` is a thin Unity-facing component. A bootstrap scene will
-attach it when scene authoring begins. Runtime services remain plain C# classes
-and do not discover each other through global singletons or scene searches.
+`GameLifetimeScope` is a thin Unity-facing component attached to the bootstrap
+scene. It explicitly injects the scene adapters configured by the editor
+bootstrap tool. Runtime services remain plain C# classes and do not discover
+each other through global singletons or scene searches.
 
 `GameEntryPoint` is registered as a VContainer entry point. When its VContainer
 start lifecycle runs, it advances the state machine from `Bootstrapping` to
@@ -112,6 +113,35 @@ Current objective text and progress are exposed as R3 read-only reactive
 properties. The service publishes typed objective change and completion events,
 but it does not directly control UI or scene objects. Future presenters can
 bind the observable state to a View without moving gameplay rules into UGUI.
+
+## Player And Interaction Flow
+
+The placeholder scene uses a small top-down `CharacterController` player.
+`PlayerInputReader` reads movement and interaction input through the Unity Input
+System. `PlayerController` applies movement and rotates the capsule toward its
+travel direction.
+
+`InteractionController` performs a short forward raycast and exposes the
+current `InteractionPromptData` through an R3 read-only reactive property.
+When interaction input is pressed, it calls the targeted `IInteractable`.
+Interactables remain narrow Unity adapters:
+
+- `PickupItemInteractable` asks `IInventoryService` to add an item.
+- `GeneratorInteractable` publishes `GeneratorActivatedEvent`.
+- `ExtractionZone` publishes `ExtractionReachedEvent` only when the objective
+  flow has reached extraction.
+
+These adapters do not update UI, objective progress, or game state directly.
+`PlayerHealthBinder` connects a player-owned `HealthModel` to the scene and
+transitions the state machine to `Lost` when that model publishes its death
+event.
+
+## Placeholder Scene Tooling
+
+`ExtractionRoom/BootstrapPrototypeScene` creates the small placeholder room,
+item configuration assets, dependency-injection roots, and build-settings
+entry. It uses Unity primitives only and is intentionally an editor bootstrap
+utility rather than production level-authoring infrastructure.
 
 ## Namespace Convention
 
