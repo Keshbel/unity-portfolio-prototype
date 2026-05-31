@@ -1,4 +1,5 @@
 using ExtractionRoom.Core;
+using ExtractionRoom.Gameplay;
 using VContainer;
 using VContainer.Unity;
 
@@ -10,6 +11,7 @@ namespace ExtractionRoom.DI
         {
             builder.Register<IEventBus, EventBus>(Lifetime.Singleton);
             builder.Register<IGameStateMachine, GameStateMachine>(Lifetime.Singleton);
+            builder.Register<IDamageService, DamageService>(Lifetime.Singleton);
             builder.RegisterEntryPoint<GameEntryPoint>();
         }
     }

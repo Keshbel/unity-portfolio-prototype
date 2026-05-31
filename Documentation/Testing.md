@@ -4,8 +4,8 @@
 
 The Unity Test Framework package is present in the generated Unity project.
 Dedicated EditMode and PlayMode test assemblies exist. EditMode coverage
-currently verifies the typed event bus and the initial game state machine
-transitions.
+currently verifies the typed event bus, the initial game state machine
+transitions, and the health and damage domain model.
 
 ## Strategy
 
@@ -14,6 +14,11 @@ transitions.
 - Use PlayMode tests only for behavior that requires Unity runtime integration.
 - Keep tests deterministic and independent of execution order.
 - Prefer testing domain behavior without scene objects.
+
+The health and damage logic is implemented as pure C# code. EditMode tests
+verify health initialization, damage and healing clamps, one-time death event
+publication, and the result returned by `DamageService` without loading a
+Unity scene.
 
 ## Commands
 
