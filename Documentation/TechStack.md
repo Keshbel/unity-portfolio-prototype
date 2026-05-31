@@ -8,6 +8,9 @@
 - UGUI
 - Unity Test Framework
 - `com.akiojin.unity-cli-bridge` for local Unity Editor automation
+- VContainer `1.18.0`
+- R3 `1.3.1`
+- NuGetForUnity `4.5.0` for restoring the R3 core package
 
 ## Unity CLI Setup
 
@@ -23,17 +26,25 @@ unity-cli system ping
 
 The default endpoint is `localhost:6400`.
 
-## Planned Runtime Libraries
+## Runtime Libraries
 
-The vertical slice is intended to use:
+The vertical slice uses:
 
 - VContainer for dependency injection and composition roots
 - R3 for reactive state observation and UI bindings
+
+R3 core binaries are restored from `Packages/nuget-packages/packages.config`.
+Run `nugetforunity restore .` before opening Unity on a fresh checkout when the
+CLI tool is installed.
+
+## Planned Runtime Libraries
+
+The vertical slice is intended to add:
+
 - UniTask for cancellable async workflows where async adds value
 - LitMotion for presentation-layer animation
 
-These third-party libraries are not installed in the foundation commit. Their
-package sources and versions will be recorded when integration begins.
+Their package sources and versions will be recorded when integration begins.
 
 ## Constraints
 

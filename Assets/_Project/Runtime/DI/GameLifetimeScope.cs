@@ -1,0 +1,16 @@
+using ExtractionRoom.Core;
+using VContainer;
+using VContainer.Unity;
+
+namespace ExtractionRoom.DI
+{
+    public sealed class GameLifetimeScope : LifetimeScope
+    {
+        protected override void Configure(IContainerBuilder builder)
+        {
+            builder.Register<IEventBus, EventBus>(Lifetime.Singleton);
+            builder.Register<IGameStateMachine, GameStateMachine>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<GameEntryPoint>();
+        }
+    }
+}

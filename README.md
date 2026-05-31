@@ -9,10 +9,16 @@ a complete game. The goal is to demonstrate clean architecture, testability,
 dependency injection, reactive UI bindings, async workflows, and clean project
 organization in a compact vertical slice.
 
-The current version is a foundation only. It defines the initial folder
-structure, assembly boundaries, namespace roots, and project documentation.
-Gameplay systems, package integration, scenes, UI, and tests have not been
-implemented yet.
+The current version is an engineering foundation. It defines the initial folder
+structure, assembly boundaries, namespace roots, core dependency injection
+services, and project documentation. Gameplay features, scenes, and UI have not
+been implemented yet.
+
+## Technical Highlights
+
+- VContainer composition root with explicit service registration
+- Testable plain C# game state machine with R3 observable state
+- Typed event-driven architecture foundation
 
 ## Project Documentation
 

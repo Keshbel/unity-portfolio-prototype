@@ -3,8 +3,9 @@
 ## Current State
 
 The Unity Test Framework package is present in the generated Unity project.
-Dedicated EditMode and PlayMode test assemblies now exist, but no tests have
-been implemented yet.
+Dedicated EditMode and PlayMode test assemblies exist. EditMode coverage
+currently verifies the typed event bus and the initial game state machine
+transitions.
 
 ## Strategy
 
@@ -16,5 +17,8 @@ been implemented yet.
 
 ## Commands
 
-Test execution commands will be documented when the first tests are added and
-the project test workflow is established.
+Run EditMode tests through Unity CLI:
+
+```text
+unity-cli tool call run_tests --json "{\"testMode\":\"EditMode\",\"filter\":\"ExtractionRoom.Tests.EditMode\"}"
+```

@@ -11,8 +11,8 @@ not a full game.
 
 ## Planned Vertical Slice
 
-- [ ] Add the approved third-party runtime libraries
-- [ ] Create the VContainer composition root
+- [ ] Add the remaining approved third-party runtime libraries
+- [x] Create the VContainer composition root
 - [ ] Implement small, testable interaction and inventory domain models
 - [ ] Add a minimal extraction objective flow
 - [ ] Bind a small UGUI HUD through R3 Presenter or Binder classes
