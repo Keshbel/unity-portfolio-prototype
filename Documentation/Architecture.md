@@ -159,6 +159,19 @@ with patrol points, a simple UGUI HUD, and the build-settings entry. It uses
 Unity primitives and built-in UGUI resources only. It is intentionally an
 editor bootstrap utility rather than production level-authoring infrastructure.
 
+## Main Scene Composition
+
+`Assets/_Project/Scenes/MainPrototype.unity` is the playable vertical slice and
+the only enabled build-settings scene. Its `CompositionRoot` owns the
+`GameLifetimeScope` serialized configuration for item definitions and explicit
+scene injection roots.
+
+The room contains a player capsule, top-down camera, reactive HUD canvas, three
+blue Fuse pickups, a green Medkit pickup, a yellow Keycard pickup, a dark
+generator cylinder, a cyan extraction trigger, and one red enemy capsule.
+Walls, crates, platform markers, floor, and lighting use Unity primitives so
+the repository remains asset-license safe and easy to inspect.
+
 ## Reactive UGUI HUD
 
 The HUD uses a small View + Presenter split. `HealthView`, `ObjectiveView`,

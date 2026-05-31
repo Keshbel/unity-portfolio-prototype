@@ -79,3 +79,34 @@ unity-cli system ping
 ```
 
 The bridge listens on `localhost:6400` by default.
+
+## How To Run
+
+1. Open the repository in Unity `6000.3.11f1`.
+2. Open `Assets/_Project/Scenes/MainPrototype.unity`.
+3. Enter Play Mode.
+
+The scene is also generated reproducibly from the Unity Editor menu:
+`ExtractionRoom/BootstrapPrototypeScene`.
+
+## Controls
+
+- `W`, `A`, `S`, `D`: move the player
+- `E`: interact with the highlighted pickup or generator
+
+## Gameplay Loop
+
+1. Collect the three blue Fuse pickups.
+2. Activate the dark generator cylinder.
+3. Reach the cyan extraction zone.
+4. Avoid the red enemy or it can reduce player health and trigger the lose UI.
+
+The green pickup is a Medkit inventory item and the yellow pickup is a Keycard
+inventory item. They demonstrate item configuration and stacking boundaries;
+using them is outside the current vertical-slice scope.
+
+## Screenshots And GIF
+
+Media capture is not committed yet. The current scene uses inspectable Unity
+primitive placeholders so the playable flow can be reviewed directly in the
+Editor.

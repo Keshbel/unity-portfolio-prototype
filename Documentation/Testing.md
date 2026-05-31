@@ -43,6 +43,10 @@ load operation is started.
 The placeholder scene is also suitable for a short Unity CLI smoke check of
 movement, pickup interaction, and reactive HUD visibility.
 
+`MainPrototype.unity` has been smoke-tested through simulated runtime input for
+the complete win route and the enemy-driven lose route. The win route verifies
+three Fuse pickups, generator activation, extraction, and the final HUD state.
+
 ## Commands
 
 Run EditMode tests through Unity CLI:

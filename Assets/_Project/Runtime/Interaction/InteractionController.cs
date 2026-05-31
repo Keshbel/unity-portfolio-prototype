@@ -39,7 +39,7 @@ namespace ExtractionRoom.Interaction
         {
             UpdateTarget();
 
-            if (inputReader.InteractPressed)
+            if (inputReader.ConsumeInteractPressed())
             {
                 currentInteractable?.Interact();
             }

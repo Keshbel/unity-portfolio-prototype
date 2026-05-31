@@ -6,6 +6,8 @@ namespace ExtractionRoom.Player
 {
     public sealed class PlayerInputReader : MonoBehaviour
     {
+        private bool wasInteractHeld;
+
         public Vector2 MoveInput
         {
             get
@@ -16,7 +18,23 @@ namespace ExtractionRoom.Player
             }
         }
 
-        public bool InteractPressed => IsPressed(keyboard => keyboard.eKey);
+        public bool ConsumeInteractPressed()
+        {
+            var isPressed = IsPressed(keyboard => keyboard.eKey);
+            if (!isPressed)
+            {
+                wasInteractHeld = false;
+                return false;
+            }
+
+            if (wasInteractHeld)
+            {
+                return false;
+            }
+
+            wasInteractHeld = true;
+            return true;
+        }
 
         private static float ReadAxis(
             System.Func<Keyboard, KeyControl> negativeSelector,
@@ -37,5 +55,6 @@ namespace ExtractionRoom.Player
 
             return false;
         }
+
     }
 }

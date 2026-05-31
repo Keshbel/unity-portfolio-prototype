@@ -17,7 +17,7 @@ namespace ExtractionRoom.Editor.Validation
 {
     public static class ExtractionRoomSceneBootstrap
     {
-        private const string ScenePath = "Assets/_Project/Scenes/ExtractionRoom.unity";
+        private const string ScenePath = "Assets/_Project/Scenes/MainPrototype.unity";
         private const string ConfigFolder = "Assets/_Project/Configs/Items";
         private const string AiConfigFolder = "Assets/_Project/Configs/AI";
 
@@ -39,12 +39,15 @@ namespace ExtractionRoom.Editor.Validation
             var enemyConfig = GetOrCreateEnemyConfig();
 
             CreateFloor();
+            CreateEnvironment();
             CreateLight();
             CreateCamera();
             CreatePlayer(injectionRoots);
-            CreateFusePickup(new Vector3(0f, 0.5f, 3f), injectionRoots);
-            CreateFusePickup(new Vector3(2f, 0.5f, 5f), injectionRoots);
-            CreateFusePickup(new Vector3(-2f, 0.5f, 7f), injectionRoots);
+            CreatePickup("Fuse Pickup 1", ItemId.Fuse, "Pick Up Fuse", new Vector3(0f, 0.5f, 3f), new Color(0.2f, 0.65f, 1f), injectionRoots);
+            CreatePickup("Fuse Pickup 2", ItemId.Fuse, "Pick Up Fuse", new Vector3(0f, 0.5f, 5f), new Color(0.2f, 0.65f, 1f), injectionRoots);
+            CreatePickup("Fuse Pickup 3", ItemId.Fuse, "Pick Up Fuse", new Vector3(0f, 0.5f, 7f), new Color(0.2f, 0.65f, 1f), injectionRoots);
+            CreatePickup("Medkit Pickup", ItemId.Medkit, "Pick Up Medkit", new Vector3(-4f, 0.5f, 5f), new Color(0.2f, 0.85f, 0.35f), injectionRoots);
+            CreatePickup("Keycard Pickup", ItemId.Keycard, "Pick Up Keycard", new Vector3(4f, 0.5f, 8f), new Color(1f, 0.8f, 0.15f), injectionRoots);
             CreateGenerator(injectionRoots);
             CreateExtractionZone(injectionRoots);
             CreateEnemy(enemyConfig, injectionRoots);
@@ -104,6 +107,27 @@ namespace ExtractionRoom.Editor.Validation
             SetColor(floor, new Color(0.2f, 0.22f, 0.25f));
         }
 
+        private static void CreateEnvironment()
+        {
+            var environment = new GameObject("Environment");
+            CreateEnvironmentCube(environment.transform, "Left Wall", new Vector3(-8f, 1f, 7f), new Vector3(0.5f, 3f, 18f));
+            CreateEnvironmentCube(environment.transform, "Right Wall", new Vector3(8f, 1f, 7f), new Vector3(0.5f, 3f, 18f));
+            CreateEnvironmentCube(environment.transform, "Back Wall", new Vector3(0f, 1f, -2f), new Vector3(16f, 3f, 0.5f));
+            CreateEnvironmentCube(environment.transform, "Generator Platform", new Vector3(0f, 0.05f, 10f), new Vector3(5f, 0.1f, 3f));
+            CreateEnvironmentCube(environment.transform, "Storage Crate 1", new Vector3(-5.5f, 0.75f, 8f), new Vector3(1.5f, 1.5f, 1.5f));
+            CreateEnvironmentCube(environment.transform, "Storage Crate 2", new Vector3(5.5f, 0.75f, 3f), new Vector3(1.5f, 1.5f, 1.5f));
+        }
+
+        private static void CreateEnvironmentCube(Transform parent, string name, Vector3 position, Vector3 scale)
+        {
+            var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube.name = name;
+            cube.transform.SetParent(parent);
+            cube.transform.position = position;
+            cube.transform.localScale = scale;
+            SetColor(cube, new Color(0.3f, 0.32f, 0.36f));
+        }
+
         private static void CreateLight()
         {
             var lightObject = new GameObject("Directional Light");
@@ -144,16 +168,22 @@ namespace ExtractionRoom.Editor.Validation
             injectionRoots.Add(player);
         }
 
-        private static void CreateFusePickup(Vector3 position, ICollection<GameObject> injectionRoots)
+        private static void CreatePickup(
+            string name,
+            ItemId itemId,
+            string actionText,
+            Vector3 position,
+            Color color,
+            ICollection<GameObject> injectionRoots)
         {
-            var pickup = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            pickup.name = "Fuse Pickup";
+            var pickup = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            pickup.name = name;
             pickup.transform.position = position;
-            pickup.transform.localScale = Vector3.one * 0.6f;
+            pickup.transform.localScale = Vector3.one * 0.65f;
             var interactable = pickup.AddComponent<PickupItemInteractable>();
-            interactable.Configure(ItemId.Fuse);
-            interactable.SetActionText("Pick Up Fuse");
-            SetColor(pickup, new Color(1f, 0.75f, 0.15f));
+            interactable.Configure(itemId);
+            interactable.SetActionText(actionText);
+            SetColor(pickup, color);
             injectionRoots.Add(pickup);
         }
 
@@ -166,7 +196,7 @@ namespace ExtractionRoom.Editor.Validation
             var interactable = generator.AddComponent<GeneratorInteractable>();
             generator.AddComponent<GeneratorActivationView>();
             interactable.SetActionText("Activate Generator");
-            SetColor(generator, new Color(0.25f, 0.8f, 0.35f));
+            SetColor(generator, new Color(0.12f, 0.15f, 0.18f));
             injectionRoots.Add(generator);
         }
 
@@ -186,14 +216,14 @@ namespace ExtractionRoom.Editor.Validation
         {
             var enemy = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             enemy.name = "Enemy";
-            enemy.transform.position = new Vector3(5f, 1f, 6f);
+            enemy.transform.position = new Vector3(6f, 1f, 12f);
             SetColor(enemy, new Color(0.85f, 0.2f, 0.2f));
 
             var patrolRoot = new GameObject("Enemy Patrol Points");
             var patrolPoints = new[]
             {
-                CreatePatrolPoint("Patrol Point 1", patrolRoot.transform, new Vector3(5f, 0f, 4f)),
-                CreatePatrolPoint("Patrol Point 2", patrolRoot.transform, new Vector3(5f, 0f, 11f))
+                CreatePatrolPoint("Patrol Point 1", patrolRoot.transform, new Vector3(6f, 0f, 9f)),
+                CreatePatrolPoint("Patrol Point 2", patrolRoot.transform, new Vector3(6f, 0f, 15f))
             };
 
             var controller = enemy.AddComponent<EnemyAIController>();
