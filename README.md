@@ -12,12 +12,15 @@ organization in a compact vertical slice.
 The current version is an engineering foundation. It defines the initial folder
 structure, assembly boundaries, namespace roots, core dependency injection
 services, and project documentation. Gameplay features, scenes, and UI have not
-been implemented yet beyond the initial health and damage domain model.
+been implemented yet beyond the initial health, damage, and inventory domain
+models.
 
 ## Implemented Features
 
 - Health/Damage System: testable plain C# health state, typed domain events,
   and a damage application service
+- Inventory System: fixed-capacity plain C# inventory state with stackable item
+  rules and ScriptableObject-backed item configuration
 
 ## Technical Highlights
 

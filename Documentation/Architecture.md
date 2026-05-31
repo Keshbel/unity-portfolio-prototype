@@ -2,9 +2,9 @@
 
 ## Current State
 
-The repository contains the initial dependency injection foundation and the
-first gameplay domain model. Scene wiring, UI flows, and Unity-facing gameplay
-adapters have not been implemented.
+The repository contains the initial dependency injection foundation and small
+health, damage, and inventory domain models. Scene wiring, UI flows, and
+Unity-facing gameplay adapters have not been implemented.
 
 ## Intended Boundaries
 
@@ -44,9 +44,9 @@ The runtime folders reserve small, explicit areas for the vertical slice:
 
 `GameLifetimeScope` is the VContainer composition root for the vertical slice.
 It registers the typed `IEventBus`, the `IGameStateMachine`, the
-`IDamageService`, and the `GameEntryPoint`. The scope is intentionally the
-single place where runtime services are wired together, so dependencies stay
-explicit and testable.
+`IDamageService`, the `IItemDefinitionProvider`, the `IInventoryService`, and
+the `GameEntryPoint`. The scope is intentionally the single place where runtime
+services are wired together, so dependencies stay explicit and testable.
 
 `GameLifetimeScope` is a thin Unity-facing component. A bootstrap scene will
 attach it when scene authoring begins. Runtime services remain plain C# classes
@@ -79,6 +79,19 @@ Future `MonoBehaviour` components should remain thin Unity-facing adapters or
 views. They may forward Unity callbacks into domain services and present model
 state, but gameplay rules stay in testable plain C# classes. This keeps the
 health and damage rules verifiable in EditMode without loading a scene.
+
+## Item Configuration And Inventory State
+
+`ItemDefinition` assets contain configuration only: stable id, display name,
+item type, maximum stack size, and optional icon. Runtime item counts never
+live in `ScriptableObject` assets. `ItemDefinitionProvider` resolves config by
+id and handles unknown ids without throwing.
+
+`InventoryService` owns runtime slots in plain C# memory. It applies
+fixed-capacity stacking and removal rules, returns explicit operation results,
+exposes immutable snapshots through an R3 read-only reactive property, and
+publishes typed `InventoryChangedEvent` messages. It has no UI or scene-object
+dependencies, so its behavior is verifiable in EditMode.
 
 ## Namespace Convention
 
