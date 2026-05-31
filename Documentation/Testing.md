@@ -5,7 +5,8 @@
 The Unity Test Framework package is present in the generated Unity project.
 Dedicated EditMode and PlayMode test assemblies exist. EditMode coverage
 currently verifies the typed event bus, the initial game state machine
-transitions, the health and damage domain model, and inventory rules.
+transitions, the health and damage domain model, inventory rules, and the
+extraction objective flow.
 
 ## Strategy
 
@@ -24,6 +25,10 @@ The inventory logic is also covered in EditMode without loading a scene. Tests
 verify stacking, maximum stack boundaries, removal, count queries, full
 inventory behavior, invalid counts, missing configuration, and reactive event
 publication.
+
+Objective EditMode tests drive typed domain events directly. They verify fuse
+progress, generator activation, extraction completion, and the final
+`Playing -> Won` game-state transition without loading a scene.
 
 ## Commands
 

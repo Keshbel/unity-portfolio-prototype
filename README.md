@@ -12,8 +12,8 @@ organization in a compact vertical slice.
 The current version is an engineering foundation. It defines the initial folder
 structure, assembly boundaries, namespace roots, core dependency injection
 services, and project documentation. Gameplay features, scenes, and UI have not
-been implemented yet beyond the initial health, damage, and inventory domain
-models.
+been implemented yet beyond the initial health, damage, inventory, and
+objective domain models.
 
 ## Implemented Features
 
@@ -21,6 +21,8 @@ models.
   and a damage application service
 - Inventory System: fixed-capacity plain C# inventory state with stackable item
   rules and ScriptableObject-backed item configuration
+- Objective System: event-driven extraction flow from fuse collection through
+  generator activation to extraction completion
 
 ## Technical Highlights
 

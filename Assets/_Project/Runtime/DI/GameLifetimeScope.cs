@@ -2,6 +2,7 @@ using ExtractionRoom.Core;
 using ExtractionRoom.Gameplay;
 using ExtractionRoom.Inventory;
 using ExtractionRoom.Items;
+using ExtractionRoom.Objectives;
 using VContainer;
 using VContainer.Unity;
 
@@ -16,6 +17,7 @@ namespace ExtractionRoom.DI
             builder.Register<IDamageService, DamageService>(Lifetime.Singleton);
             builder.Register<IItemDefinitionProvider, ItemDefinitionProvider>(Lifetime.Singleton);
             builder.Register<IInventoryService, InventoryService>(Lifetime.Singleton);
+            builder.Register<IObjectiveService, ObjectiveService>(Lifetime.Singleton);
             builder.RegisterEntryPoint<GameEntryPoint>();
         }
     }

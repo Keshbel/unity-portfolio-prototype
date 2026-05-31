@@ -1,5 +1,6 @@
 using ExtractionRoom.Core;
 using ExtractionRoom.DI;
+using ExtractionRoom.Objectives;
 using NUnit.Framework;
 
 namespace ExtractionRoom.Tests.EditMode
@@ -63,7 +64,8 @@ namespace ExtractionRoom.Tests.EditMode
         {
             using var eventBus = new EventBus();
             using var stateMachine = new GameStateMachine(eventBus);
-            var entryPoint = new GameEntryPoint(stateMachine);
+            using var objectiveService = new ObjectiveService(eventBus, stateMachine);
+            var entryPoint = new GameEntryPoint(stateMachine, objectiveService);
 
             entryPoint.Start();
 

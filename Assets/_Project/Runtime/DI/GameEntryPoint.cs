@@ -1,4 +1,6 @@
+using System;
 using ExtractionRoom.Core;
+using ExtractionRoom.Objectives;
 using VContainer.Unity;
 
 namespace ExtractionRoom.DI
@@ -7,9 +9,10 @@ namespace ExtractionRoom.DI
     {
         private readonly IGameStateMachine gameStateMachine;
 
-        public GameEntryPoint(IGameStateMachine gameStateMachine)
+        public GameEntryPoint(IGameStateMachine gameStateMachine, IObjectiveService objectiveService)
         {
             this.gameStateMachine = gameStateMachine;
+            _ = objectiveService ?? throw new ArgumentNullException(nameof(objectiveService));
         }
 
         public void Start()

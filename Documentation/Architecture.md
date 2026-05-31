@@ -3,8 +3,8 @@
 ## Current State
 
 The repository contains the initial dependency injection foundation and small
-health, damage, and inventory domain models. Scene wiring, UI flows, and
-Unity-facing gameplay adapters have not been implemented.
+health, damage, inventory, and objective domain models. Scene wiring, UI flows,
+and Unity-facing gameplay adapters have not been implemented.
 
 ## Intended Boundaries
 
@@ -44,9 +44,10 @@ The runtime folders reserve small, explicit areas for the vertical slice:
 
 `GameLifetimeScope` is the VContainer composition root for the vertical slice.
 It registers the typed `IEventBus`, the `IGameStateMachine`, the
-`IDamageService`, the `IItemDefinitionProvider`, the `IInventoryService`, and
-the `GameEntryPoint`. The scope is intentionally the single place where runtime
-services are wired together, so dependencies stay explicit and testable.
+`IDamageService`, the `IItemDefinitionProvider`, the `IInventoryService`, the
+`IObjectiveService`, and the `GameEntryPoint`. The scope is intentionally the
+single place where runtime services are wired together, so dependencies stay
+explicit and testable.
 
 `GameLifetimeScope` is a thin Unity-facing component. A bootstrap scene will
 attach it when scene authoring begins. Runtime services remain plain C# classes
@@ -92,6 +93,25 @@ fixed-capacity stacking and removal rules, returns explicit operation results,
 exposes immutable snapshots through an R3 read-only reactive property, and
 publishes typed `InventoryChangedEvent` messages. It has no UI or scene-object
 dependencies, so its behavior is verifiable in EditMode.
+
+## Objective Flow
+
+`ObjectiveService` is a plain C# orchestrator for the compact extraction flow:
+
+```text
+Collect 3 Fuses -> Activate Generator -> Reach Extraction Zone -> Completed
+```
+
+The service observes typed `InventoryChangedEvent`, `GeneratorActivatedEvent`,
+and `ExtractionReachedEvent` messages through `IEventBus`. Inventory, future
+generator adapters, and future extraction-zone adapters do not need direct
+references to the objective service. When extraction completes, the objective
+service asks `IGameStateMachine` to transition from `Playing` to `Won`.
+
+Current objective text and progress are exposed as R3 read-only reactive
+properties. The service publishes typed objective change and completion events,
+but it does not directly control UI or scene objects. Future presenters can
+bind the observable state to a View without moving gameplay rules into UGUI.
 
 ## Namespace Convention
 
