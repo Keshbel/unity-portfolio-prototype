@@ -4,7 +4,8 @@
   "references": [
     "VContainer",
     "Unity.InputSystem",
-    "Unity.ugui"
+    "Unity.ugui",
+    "LitMotion"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

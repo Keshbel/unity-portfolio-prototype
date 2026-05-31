@@ -18,7 +18,7 @@ not a full game.
 - [x] Add a placeholder player and interaction loop
 - [x] Bind a small UGUI HUD through R3 Presenter or Binder classes
 - [ ] Add one useful cancellable UniTask initialization flow
-- [ ] Add presentation-only LitMotion feedback
+- [x] Add presentation-only LitMotion feedback
 - [x] Add focused EditMode tests and minimal PlayMode coverage
 - [x] Add a small placeholder-scene bootstrap tool
 

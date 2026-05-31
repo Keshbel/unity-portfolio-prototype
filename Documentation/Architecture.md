@@ -161,6 +161,22 @@ adapters have been configured. This keeps service dependencies visible at the
 composition root and avoids global singletons, scene searches, and gameplay
 logic inside UGUI Views.
 
+## Presentation Layer Boundaries
+
+LitMotion tweening is restricted to Views and components under `Presentation`.
+`PresentationTweenHelper` centralizes short fades, scale pulses, and color
+flashes while linking motion handles to Unity component lifetimes so destroyed
+objects cancel their active tween work.
+
+The interaction prompt fades in and out, inventory slots pulse when their
+displayed count increases, health damage flashes the health label,
+`EndGameView` fades in, and `GeneratorActivationView` pulses the generator when
+it observes `GeneratorActivatedEvent`.
+
+These effects are optional presentation feedback. Domain services, gameplay
+models, and the game-state machine do not reference LitMotion. No objective,
+damage, inventory, or state transition waits for a tween callback.
+
 ## Namespace Convention
 
 Assembly definition roots establish these namespace prefixes:

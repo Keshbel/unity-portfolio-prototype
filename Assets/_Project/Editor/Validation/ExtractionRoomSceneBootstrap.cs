@@ -4,6 +4,7 @@ using ExtractionRoom.Gameplay;
 using ExtractionRoom.Interaction;
 using ExtractionRoom.Items;
 using ExtractionRoom.Player;
+using ExtractionRoom.Presentation;
 using ExtractionRoom.UI;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -143,6 +144,7 @@ namespace ExtractionRoom.Editor.Validation
             generator.transform.position = new Vector3(0f, 1f, 10f);
             generator.transform.localScale = new Vector3(1.5f, 1f, 1.5f);
             var interactable = generator.AddComponent<GeneratorInteractable>();
+            generator.AddComponent<GeneratorActivationView>();
             interactable.SetActionText("Activate Generator");
             SetColor(generator, new Color(0.25f, 0.8f, 0.35f));
             injectionRoots.Add(generator);
@@ -188,6 +190,7 @@ namespace ExtractionRoom.Editor.Validation
                 new Vector2(0f, 120f),
                 TextAnchor.MiddleCenter,
                 new Vector2(720f, 56f),
+                addCanvasGroup: true,
                 centered: true);
             var endGameView = CreateTextView<EndGameView>(
                 canvasObject.transform,
@@ -196,6 +199,7 @@ namespace ExtractionRoom.Editor.Validation
                 TextAnchor.MiddleCenter,
                 new Vector2(1000f, 120f),
                 fontSize: 52,
+                addCanvasGroup: true,
                 centered: true);
 
             hudView.Configure(healthView, objectiveView, inventoryView, interactionPromptView, endGameView);
@@ -230,6 +234,7 @@ namespace ExtractionRoom.Editor.Validation
             TextAnchor alignment,
             Vector2 size,
             int fontSize = 28,
+            bool addCanvasGroup = false,
             bool centered = false)
             where T : MonoBehaviour
         {
@@ -245,20 +250,23 @@ namespace ExtractionRoom.Editor.Validation
             }
 
             var text = AddText(viewObject, fontSize, alignment);
+            var canvasGroup = addCanvasGroup ? viewObject.AddComponent<CanvasGroup>() : null;
             var view = viewObject.AddComponent<T>();
             switch (view)
             {
                 case HealthView healthView:
-                    healthView.Configure(text);
+                    var damageFeedback = viewObject.AddComponent<DamageFeedbackView>();
+                    damageFeedback.Configure(text);
+                    healthView.Configure(text, damageFeedback);
                     break;
                 case ObjectiveView objectiveView:
                     objectiveView.Configure(text);
                     break;
                 case InteractionPromptView interactionPromptView:
-                    interactionPromptView.Configure(text);
+                    interactionPromptView.Configure(text, canvasGroup);
                     break;
                 case EndGameView endGameView:
-                    endGameView.Configure(text);
+                    endGameView.Configure(text, canvasGroup);
                     break;
             }
 

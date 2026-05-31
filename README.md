@@ -35,6 +35,7 @@ documentation.
 - Typed event-driven architecture foundation
 - Thin Unity-facing interaction adapters wired through dependency injection
 - R3-driven UGUI presenters with passive Views and owned subscription cleanup
+- LitMotion presentation feedback isolated from gameplay state transitions
 
 ## Project Documentation
 

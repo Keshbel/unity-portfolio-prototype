@@ -6,6 +6,7 @@ using ExtractionRoom.Items;
 using ExtractionRoom.Objectives;
 using ExtractionRoom.Player;
 using ExtractionRoom.Interaction;
+using ExtractionRoom.Presentation;
 using ExtractionRoom.UI;
 using UnityEngine;
 using VContainer;
@@ -65,6 +66,11 @@ namespace ExtractionRoom.DI
                 foreach (var generator in root.GetComponentsInChildren<GeneratorInteractable>(true))
                 {
                     generator.Construct(eventBus);
+                }
+
+                foreach (var generatorView in root.GetComponentsInChildren<GeneratorActivationView>(true))
+                {
+                    generatorView.Construct(eventBus);
                 }
 
                 foreach (var extractionZone in root.GetComponentsInChildren<ExtractionZone>(true))

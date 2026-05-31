@@ -1,3 +1,5 @@
+using ExtractionRoom.Presentation;
+using LitMotion;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,14 +10,22 @@ namespace ExtractionRoom.UI
         [SerializeField]
         private Text label;
 
-        public void Configure(Text text)
+        [SerializeField]
+        private CanvasGroup canvasGroup;
+
+        private MotionHandle fadeHandle;
+
+        public void Configure(Text text, CanvasGroup group)
         {
             label = text;
+            canvasGroup = group;
         }
 
         public void Hide()
         {
-            label.gameObject.SetActive(false);
+            fadeHandle.TryCancel();
+            canvasGroup.alpha = 0f;
+            canvasGroup.gameObject.SetActive(false);
         }
 
         public void ShowWin()
@@ -31,7 +41,13 @@ namespace ExtractionRoom.UI
         private void Show(string message)
         {
             label.text = message;
-            label.gameObject.SetActive(true);
+            canvasGroup.gameObject.SetActive(true);
+            PresentationTweenHelper.Fade(this, canvasGroup, ref fadeHandle, 0f, 1f, 0.35f);
+        }
+
+        private void OnDestroy()
+        {
+            fadeHandle.TryCancel();
         }
     }
 }
