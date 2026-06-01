@@ -107,6 +107,6 @@ using them is outside the current vertical-slice scope.
 
 ## Screenshots And GIF
 
-Media capture is not committed yet. The intentionally minimal content pass uses
-inspectable Unity primitives and simple project materials so the playable flow
-can be reviewed directly in the Editor without third-party art dependencies.
+Media capture is not committed yet. The scene combines lightweight primitives,
+simple project materials, and a curated CC0 Quaternius prop set. Third-party
+credits are recorded in [Asset Credits](Documentation/AssetCredits.md).

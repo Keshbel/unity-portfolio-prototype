@@ -171,7 +171,9 @@ blue Fuse pickups, a green Medkit pickup, a yellow Keycard pickup, a dark
 generator with an activation light, an orange extraction trigger, and one red
 enemy capsule. Walls, crates, utility pipes, lamps, platform markers, floor,
 labels, and extraction markers use Unity primitives or built-in resources so
-the repository remains asset-license safe and easy to inspect.
+the repository remains asset-license safe and easy to inspect. A curated CC0
+Quaternius content set adds sci-fi wall details, pipes, props, a medkit visual,
+and the enemy slime visual without changing gameplay ownership.
 
 The lightweight content pass stays inside scene composition and presentation
 components. It does not move gameplay decisions into decorative objects. The

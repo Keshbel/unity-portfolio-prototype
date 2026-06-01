@@ -21,6 +21,7 @@ namespace ExtractionRoom.Editor.Validation
         private const string ConfigFolder = "Assets/_Project/Configs/Items";
         private const string AiConfigFolder = "Assets/_Project/Configs/AI";
         private const string MaterialFolder = "Assets/_Project/Art/Materials";
+        private const string QuaterniusFolder = "Assets/_Project/Art/External/Quaternius";
 
         private static readonly Color EnvironmentColor = new Color(0.24f, 0.27f, 0.31f);
         private static readonly Color FloorColor = new Color(0.14f, 0.16f, 0.19f);
@@ -131,6 +132,7 @@ namespace ExtractionRoom.Editor.Validation
             CreateEnvironmentCube(environment.transform, "Utility Barrier Left", new Vector3(-5.5f, 0.5f, 12f), new Vector3(3f, 1f, 0.45f));
             CreateUtilityPipes(environment.transform);
             CreateLamps(environment.transform);
+            CreateQuaterniusEnvironment(environment.transform);
         }
 
         private static void CreateEnvironmentCube(Transform parent, string name, Vector3 position, Vector3 scale)
@@ -158,7 +160,8 @@ namespace ExtractionRoom.Editor.Validation
             cameraObject.tag = "MainCamera";
             cameraObject.transform.position = new Vector3(0f, 12f, -7f);
             cameraObject.transform.rotation = Quaternion.Euler(48f, 0f, 0f);
-            cameraObject.AddComponent<Camera>();
+            var camera = cameraObject.AddComponent<Camera>();
+            camera.backgroundColor = new Color(0.035f, 0.05f, 0.08f);
             cameraObject.AddComponent<AudioListener>();
         }
 
@@ -207,6 +210,18 @@ namespace ExtractionRoom.Editor.Validation
             interactable.SetActionText(actionText);
             SetMaterial(pickup, itemId.ToString(), color);
             CreatePickupDetails(pickup.transform, itemId, color);
+            if (itemId == ItemId.Medkit)
+            {
+                pickup.GetComponent<Renderer>().enabled = false;
+                CreateSizedModelDecoration(
+                    pickup.transform,
+                    "First Aid Kit Visual",
+                    $"{QuaterniusFolder}/Survival/FirstAidKit_Hard.fbx",
+                    Vector3.zero,
+                    0.9f,
+                    Quaternion.Euler(0f, 180f, 0f));
+            }
+
             CreateWorldLabel(pickup.transform, itemId.ToString().ToUpperInvariant(), new Vector3(0f, 1f, 0f), color);
             injectionRoots.Add(pickup);
         }
@@ -247,7 +262,14 @@ namespace ExtractionRoom.Editor.Validation
             enemy.name = "Enemy";
             enemy.transform.position = new Vector3(6f, 1f, 12f);
             SetMaterial(enemy, "Enemy", DangerColor);
-            CreateDecorativePrimitive(enemy.transform, "Enemy Warning Core", PrimitiveType.Sphere, new Vector3(0f, 0.7f, -0.45f), Vector3.one * 0.3f, new Color(1f, 0.55f, 0.15f), "DangerAccent");
+            enemy.GetComponent<Renderer>().enabled = false;
+            CreateSizedModelDecoration(
+                enemy.transform,
+                "Slime Visual",
+                $"{QuaterniusFolder}/Monsters/Slime.fbx",
+                new Vector3(0f, -1f, 0f),
+                1.8f,
+                Quaternion.identity);
 
             var patrolRoot = new GameObject("Enemy Patrol Points");
             var patrolPoints = new[]
@@ -473,6 +495,87 @@ namespace ExtractionRoom.Editor.Validation
             CreateDecorativePrimitive(zone, "Extraction Boundary Left", PrimitiveType.Cube, new Vector3(-0.48f, 0.7f, 0f), new Vector3(0.05f, 1.3f, 1f), ExtractionColor, "ExtractionMarker");
             CreateDecorativePrimitive(zone, "Extraction Boundary Right", PrimitiveType.Cube, new Vector3(0.48f, 0.7f, 0f), new Vector3(0.05f, 1.3f, 1f), ExtractionColor, "ExtractionMarker");
             CreateWorldLabel(zone, "EXTRACTION", new Vector3(0f, 3.4f, 0f), ExtractionColor, 0.035f);
+        }
+
+        private static void CreateQuaterniusEnvironment(Transform parent)
+        {
+            CreateModelDecoration(parent, "Sci-Fi Door", $"{QuaterniusFolder}/SciFi/Door_Double.fbx", new Vector3(0f, 0f, 15.7f), Vector3.one * 1.45f, Quaternion.identity);
+            CreateModelDecoration(parent, "Sci-Fi Pipe Assembly", $"{QuaterniusFolder}/SciFi/Pipes.fbx", new Vector3(-7.3f, 0.2f, 3f), Vector3.one * 1.2f, Quaternion.Euler(0f, 90f, 0f));
+            CreateModelDecoration(parent, "Sci-Fi Vent", $"{QuaterniusFolder}/SciFi/Details_Vent_2.fbx", new Vector3(7.7f, 1.1f, 5f), Vector3.one * 1.1f, Quaternion.Euler(0f, -90f, 0f));
+            CreateModelDecoration(parent, "Sci-Fi Wall Panel Left", $"{QuaterniusFolder}/SciFi/Wall_2.fbx", new Vector3(-7.65f, 0f, 11f), Vector3.one * 1.15f, Quaternion.Euler(0f, 90f, 0f));
+            CreateModelDecoration(parent, "Sci-Fi Wall Panel Right", $"{QuaterniusFolder}/SciFi/Wall_2.fbx", new Vector3(7.65f, 0f, 11f), Vector3.one * 1.15f, Quaternion.Euler(0f, -90f, 0f));
+
+            CreateSizedModelDecoration(parent, "Radio Prop", $"{QuaterniusFolder}/Survival/Radio.fbx", new Vector3(-5.5f, 1.65f, 8f), 0.9f, Quaternion.Euler(0f, 30f, 0f));
+            CreateSizedModelDecoration(parent, "Gas Can Prop", $"{QuaterniusFolder}/Survival/GasCan.fbx", new Vector3(-6.2f, 0f, 12.8f), 0.8f, Quaternion.Euler(0f, 20f, 0f));
+            CreateSizedModelDecoration(parent, "Trashcan Prop", $"{QuaterniusFolder}/Survival/Trashcan.fbx", new Vector3(6.4f, 0f, 6.5f), 0.9f, Quaternion.identity);
+            CreateSizedModelDecoration(parent, "Propane Tank Prop", $"{QuaterniusFolder}/Survival/PropaneTank.fbx", new Vector3(5.8f, 0f, 4.8f), 0.65f, Quaternion.Euler(0f, -20f, 0f));
+        }
+
+        private static GameObject CreateModelDecoration(
+            Transform parent,
+            string name,
+            string assetPath,
+            Vector3 localPosition,
+            Vector3 localScale,
+            Quaternion localRotation)
+        {
+            var model = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+            if (model == null)
+            {
+                Debug.LogWarning($"Optional content asset is missing: {assetPath}");
+                return null;
+            }
+
+            var decoration = Object.Instantiate(model, parent);
+            decoration.name = name;
+            decoration.transform.localPosition = localPosition;
+            decoration.transform.localScale = localScale;
+            decoration.transform.localRotation = localRotation;
+            foreach (var collider in decoration.GetComponentsInChildren<Collider>())
+            {
+                Object.DestroyImmediate(collider);
+            }
+
+            return decoration;
+        }
+
+        private static GameObject CreateSizedModelDecoration(
+            Transform parent,
+            string name,
+            string assetPath,
+            Vector3 localPosition,
+            float targetWidth,
+            Quaternion localRotation)
+        {
+            var decoration = CreateModelDecoration(parent, name, assetPath, localPosition, Vector3.one, localRotation);
+            if (decoration == null || !TryGetRendererBounds(decoration, out var bounds) || bounds.size.x <= 0f)
+            {
+                return decoration;
+            }
+
+            decoration.transform.localScale *= targetWidth / bounds.size.x;
+            TryGetRendererBounds(decoration, out bounds);
+            var intendedBase = parent.TransformPoint(localPosition);
+            decoration.transform.position += Vector3.up * (intendedBase.y - bounds.min.y);
+            return decoration;
+        }
+
+        private static bool TryGetRendererBounds(GameObject root, out Bounds bounds)
+        {
+            var renderers = root.GetComponentsInChildren<Renderer>();
+            if (renderers.Length == 0)
+            {
+                bounds = default;
+                return false;
+            }
+
+            bounds = renderers[0].bounds;
+            for (var index = 1; index < renderers.Length; index++)
+            {
+                bounds.Encapsulate(renderers[index].bounds);
+            }
+
+            return true;
         }
 
         private static GameObject CreateDecorativePrimitive(
