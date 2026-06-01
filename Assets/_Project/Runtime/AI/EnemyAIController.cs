@@ -1,3 +1,4 @@
+using System;
 using ExtractionRoom.Core;
 using ExtractionRoom.Gameplay;
 using ExtractionRoom.Player;
@@ -25,18 +26,48 @@ namespace ExtractionRoom.AI
 
         public void Configure(EnemyConfig enemyConfig, Transform[] points)
         {
-            config = enemyConfig;
-            patrolPoints = points;
+            config = enemyConfig ?? throw new ArgumentNullException(nameof(enemyConfig));
+            patrolPoints = points ?? throw new ArgumentNullException(nameof(points));
         }
 
         [Inject]
         public void Construct(IDamageService damageService, IEventBus eventBus, PlayerHealthBinder playerHealthBinder)
         {
+            if (damageService == null)
+            {
+                throw new ArgumentNullException(nameof(damageService));
+            }
+
+            if (eventBus == null)
+            {
+                throw new ArgumentNullException(nameof(eventBus));
+            }
+
+            if (playerHealthBinder == null)
+            {
+                throw new ArgumentNullException(nameof(playerHealthBinder));
+            }
+
+            if (config == null)
+            {
+                throw new MissingReferenceException("Enemy config is not assigned.");
+            }
+
+            if (playerHealthBinder.Health == null)
+            {
+                throw new InvalidOperationException("Player health must be constructed before enemy AI.");
+            }
+
             player = playerHealthBinder.transform;
             health = new HealthModel(config.MaxHealth, eventBus);
             var positions = new Vector3[patrolPoints.Length];
             for (var index = 0; index < patrolPoints.Length; index++)
             {
+                if (patrolPoints[index] == null)
+                {
+                    throw new MissingReferenceException($"Enemy patrol point at index {index} is missing.");
+                }
+
                 positions[index] = patrolPoints[index].position;
             }
 

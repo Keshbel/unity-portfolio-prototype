@@ -1,3 +1,4 @@
+using System;
 using ExtractionRoom.Core;
 using ExtractionRoom.Objectives;
 using ExtractionRoom.Player;
@@ -16,8 +17,8 @@ namespace ExtractionRoom.Gameplay
         [Inject]
         public void Construct(IEventBus bus, IObjectiveService objectives)
         {
-            eventBus = bus;
-            objectiveService = objectives;
+            eventBus = bus ?? throw new ArgumentNullException(nameof(bus));
+            objectiveService = objectives ?? throw new ArgumentNullException(nameof(objectives));
         }
 
         private void OnTriggerEnter(Collider other)

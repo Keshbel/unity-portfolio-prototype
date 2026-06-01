@@ -28,6 +28,12 @@ namespace ExtractionRoom.Presentation
         [Inject]
         public void Construct(IEventBus eventBus)
         {
+            if (eventBus == null)
+            {
+                throw new ArgumentNullException(nameof(eventBus));
+            }
+
+            activationSubscription?.Dispose();
             baseScale = transform.localScale;
             activationSubscription = eventBus.Subscribe<GeneratorActivatedEvent>(_ => Play());
         }

@@ -80,6 +80,23 @@ unity-cli system ping
 
 The bridge listens on `localhost:6400` by default.
 
+## Testing
+
+The project keeps domain coverage in deterministic EditMode tests and uses
+PlayMode only for Unity-facing integration. The PlayMode suite includes a
+`MainPrototype` scene smoke test that verifies the composition root, player,
+HUD Canvas, generator, and extraction zone.
+
+Run the suites from Unity Test Runner or through `unity-cli`:
+
+```text
+unity-cli tool call run_tests --json "{\"testMode\":\"EditMode\",\"filter\":\"ExtractionRoom.Tests.EditMode\"}"
+unity-cli tool call run_tests --json "{\"testMode\":\"PlayMode\",\"filter\":\"ExtractionRoom.Tests.PlayMode\"}"
+```
+
+Full input-driven gameplay automation is intentionally outside this compact
+prototype scope.
+
 ## How To Run
 
 1. Open the repository in Unity `6000.3.11f1`.

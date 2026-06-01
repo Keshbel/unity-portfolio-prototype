@@ -63,6 +63,32 @@ namespace ExtractionRoom.Tests.EditMode
         }
 
         [Test]
+        public void GeneratorActivated_BeforeCollectingFuses_DoesNotAdvanceObjective()
+        {
+            using var eventBus = new EventBus();
+            using var stateMachine = new GameStateMachine(eventBus);
+            using var objectives = new ObjectiveService(eventBus, stateMachine);
+
+            eventBus.Publish(new GeneratorActivatedEvent());
+
+            Assert.That(objectives.CurrentState.Step, Is.EqualTo(ObjectiveStep.CollectFuses));
+        }
+
+        [Test]
+        public void ExtractionReached_BeforeGeneratorActivation_DoesNotCompleteObjective()
+        {
+            using var eventBus = new EventBus();
+            using var stateMachine = new GameStateMachine(eventBus);
+            using var objectives = new ObjectiveService(eventBus, stateMachine);
+            PublishFuseCount(eventBus, 3);
+
+            eventBus.Publish(new ExtractionReachedEvent());
+
+            Assert.That(objectives.CurrentState.Step, Is.EqualTo(ObjectiveStep.ActivateGenerator));
+            Assert.That(stateMachine.CurrentState, Is.EqualTo(GameState.Bootstrapping));
+        }
+
+        [Test]
         public void ExtractionReached_CompletesFinalObjective()
         {
             using var eventBus = new EventBus();

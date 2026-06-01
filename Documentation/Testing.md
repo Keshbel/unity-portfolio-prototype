@@ -6,7 +6,8 @@ The Unity Test Framework package is present in the generated Unity project.
 Dedicated EditMode and PlayMode test assemblies exist. EditMode coverage
 currently verifies the typed event bus, the initial game state machine
 transitions, the health and damage domain model, inventory rules, and the
-extraction objective flow.
+extraction objective flow. PlayMode coverage includes a scene wiring smoke test
+for the playable prototype.
 
 ## Strategy
 
@@ -32,6 +33,9 @@ progress, generator activation, extraction completion, and the final
 
 PlayMode coverage verifies the Unity-facing player health binder: a player
 death event from its owned `HealthModel` transitions the game state to `Lost`.
+The `MainPrototype` smoke test loads the scene and checks the composition root,
+player, HUD Canvas, generator, and extraction zone. It intentionally avoids
+timing-sensitive input automation.
 
 The explicit enemy AI state machine is also covered in EditMode. Tests verify
 idle and patrol transitions, player detection, entry into attack range, damage
@@ -40,12 +44,11 @@ Async entry-point tests verify that the game remains in `Bootstrapping` until
 initialization completes and that cancellation does not transition to
 `Playing`. Scene-loading validation rejects missing scene names before a Unity
 load operation is started.
-The placeholder scene is also suitable for a short Unity CLI smoke check of
-movement, pickup interaction, and reactive HUD visibility.
-
-`MainPrototype.unity` has been smoke-tested through simulated runtime input for
-the complete win route and the enemy-driven lose route. The win route verifies
-three Fuse pickups, generator activation, extraction, and the final HUD state.
+Manual or short Unity CLI checks remain useful for movement, pickup interaction,
+reactive HUD visibility, the complete win route, and the enemy-driven lose
+route. Those checks are intentionally not part of the automated PlayMode suite:
+synthetic input and AI timing would make a compact wiring test unnecessarily
+fragile.
 
 ## Commands
 
@@ -60,3 +63,6 @@ Run project PlayMode tests through Unity CLI:
 ```text
 unity-cli tool call run_tests --json "{\"testMode\":\"PlayMode\",\"filter\":\"ExtractionRoom.Tests.PlayMode\"}"
 ```
+
+The same suites can be run in the Unity Test Runner window by selecting the
+`EditMode` or `PlayMode` tab and running the `ExtractionRoom.Tests` tests.

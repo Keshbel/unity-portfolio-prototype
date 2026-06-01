@@ -18,7 +18,8 @@ namespace ExtractionRoom.DI
             IGameInitializationService initializationService,
             IObjectiveService objectiveService)
         {
-            this.gameStateMachine = gameStateMachine;
+            this.gameStateMachine = gameStateMachine
+                ?? throw new ArgumentNullException(nameof(gameStateMachine));
             this.initializationService = initializationService
                 ?? throw new ArgumentNullException(nameof(initializationService));
             _ = objectiveService ?? throw new ArgumentNullException(nameof(objectiveService));

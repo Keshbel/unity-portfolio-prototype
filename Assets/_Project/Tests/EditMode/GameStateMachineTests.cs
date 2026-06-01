@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using ExtractionRoom.Core;
@@ -17,6 +18,12 @@ namespace ExtractionRoom.Tests.EditMode
 
             Assert.That(stateMachine.CurrentState, Is.EqualTo(GameState.Bootstrapping));
             Assert.That(stateMachine.CurrentStateObservable.CurrentValue, Is.EqualTo(GameState.Bootstrapping));
+        }
+
+        [Test]
+        public void Constructor_WithMissingEventBus_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new GameStateMachine(null));
         }
 
         [Test]
@@ -59,6 +66,20 @@ namespace ExtractionRoom.Tests.EditMode
 
             Assert.That(didTransition, Is.False);
             Assert.That(stateMachine.CurrentState, Is.EqualTo(GameState.Bootstrapping));
+        }
+
+        [Test]
+        public void TryTransitionTo_FromTerminalState_DoesNotTransition()
+        {
+            using var eventBus = new EventBus();
+            using var stateMachine = new GameStateMachine(eventBus);
+            stateMachine.TryTransitionTo(GameState.Playing);
+            stateMachine.TryTransitionTo(GameState.Won);
+
+            var didTransition = stateMachine.TryTransitionTo(GameState.Lost);
+
+            Assert.That(didTransition, Is.False);
+            Assert.That(stateMachine.CurrentState, Is.EqualTo(GameState.Won));
         }
 
         [Test]

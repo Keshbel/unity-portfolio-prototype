@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ExtractionRoom.AI;
 using ExtractionRoom.Core;
@@ -25,8 +26,10 @@ namespace ExtractionRoom.DI
 
         public void ConfigureScene(ItemDefinition[] definitions, IEnumerable<GameObject> injectionRoots)
         {
-            itemDefinitions = definitions;
-            sceneInjectionRoots = new List<GameObject>(injectionRoots).ToArray();
+            itemDefinitions = definitions ?? throw new ArgumentNullException(nameof(definitions));
+            sceneInjectionRoots = injectionRoots != null
+                ? new List<GameObject>(injectionRoots).ToArray()
+                : throw new ArgumentNullException(nameof(injectionRoots));
         }
 
         protected override void Configure(IContainerBuilder builder)
@@ -56,6 +59,11 @@ namespace ExtractionRoom.DI
 
             foreach (var root in sceneInjectionRoots)
             {
+                if (root == null)
+                {
+                    throw new MissingReferenceException("A scene injection root is missing.");
+                }
+
                 foreach (var healthBinder in root.GetComponentsInChildren<PlayerHealthBinder>(true))
                 {
                     healthBinder.Construct(eventBus, gameStateMachine);

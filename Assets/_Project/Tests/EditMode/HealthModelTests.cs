@@ -1,3 +1,4 @@
+using System;
 using ExtractionRoom.Core;
 using ExtractionRoom.Gameplay;
 using NUnit.Framework;
@@ -16,6 +17,14 @@ namespace ExtractionRoom.Tests.EditMode
             Assert.That(health.CurrentHealth, Is.EqualTo(100));
             Assert.That(health.CurrentHealthObservable.CurrentValue, Is.EqualTo(100));
             Assert.That(health.IsDead, Is.False);
+        }
+
+        [Test]
+        public void Constructor_WithInvalidMaximumHealth_Throws()
+        {
+            using var eventBus = new EventBus();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => new HealthModel(0, eventBus));
         }
 
         [Test]
@@ -42,6 +51,15 @@ namespace ExtractionRoom.Tests.EditMode
         }
 
         [Test]
+        public void ApplyDamage_WithNegativeDamage_Throws()
+        {
+            using var eventBus = new EventBus();
+            using var health = new HealthModel(100, eventBus);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => health.ApplyDamage(-1));
+        }
+
+        [Test]
         public void Heal_RestoresHealth()
         {
             using var eventBus = new EventBus();
@@ -65,6 +83,15 @@ namespace ExtractionRoom.Tests.EditMode
 
             Assert.That(restoredHealth, Is.EqualTo(10));
             Assert.That(health.CurrentHealth, Is.EqualTo(100));
+        }
+
+        [Test]
+        public void Heal_WithNegativeAmount_Throws()
+        {
+            using var eventBus = new EventBus();
+            using var health = new HealthModel(100, eventBus);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => health.Heal(-1));
         }
 
         [Test]

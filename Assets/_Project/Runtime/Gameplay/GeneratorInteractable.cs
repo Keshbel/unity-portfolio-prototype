@@ -1,3 +1,4 @@
+using System;
 using ExtractionRoom.Core;
 using ExtractionRoom.Interaction;
 using UnityEngine;
@@ -13,7 +14,7 @@ namespace ExtractionRoom.Gameplay
         [Inject]
         public void Construct(IEventBus bus)
         {
-            eventBus = bus;
+            eventBus = bus ?? throw new ArgumentNullException(nameof(bus));
         }
 
         public override void Interact()

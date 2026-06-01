@@ -78,6 +78,23 @@ namespace ExtractionRoom.Tests.EditMode
         }
 
         [Test]
+        public void RemoveItem_WhenItemsAreInsufficient_ReturnsFailureWithoutPublishingChange()
+        {
+            using var eventBus = new EventBus();
+            using var inventory = CreateInventory(eventBus, CreateDefinition(ItemId.Fuse, ItemType.Fuse, 3));
+            inventory.AddItem(ItemId.Fuse, 1);
+            var notificationCount = 0;
+            using var subscription = eventBus.Subscribe<InventoryChangedEvent>(_ => notificationCount++);
+
+            var result = inventory.RemoveItem(ItemId.Fuse, 2);
+
+            Assert.That(result.Status, Is.EqualTo(InventoryOperationStatus.InsufficientItems));
+            Assert.That(result.AffectedCount, Is.Zero);
+            Assert.That(inventory.GetItemCount(ItemId.Fuse), Is.EqualTo(1));
+            Assert.That(notificationCount, Is.Zero);
+        }
+
+        [Test]
         public void HasItem_ReportsWhetherRequestedCountExists()
         {
             using var eventBus = new EventBus();
@@ -116,6 +133,21 @@ namespace ExtractionRoom.Tests.EditMode
             Assert.That(result.AffectedCount, Is.Zero);
             Assert.That(inventory.GetItemCount(ItemId.Keycard), Is.EqualTo(1));
             Assert.That(inventory.GetItemCount(ItemId.Fuse), Is.Zero);
+        }
+
+        [Test]
+        public void AddItem_WhenRequestedCountDoesNotFit_IsAtomic()
+        {
+            using var eventBus = new EventBus();
+            using var inventory = CreateInventory(
+                eventBus,
+                1,
+                CreateDefinition(ItemId.Fuse, ItemType.Fuse, 2));
+
+            var result = inventory.AddItem(ItemId.Fuse, 3);
+
+            Assert.That(result.Status, Is.EqualTo(InventoryOperationStatus.InventoryFull));
+            Assert.That(inventory.Snapshot.Slots, Is.Empty);
         }
 
         [Test]

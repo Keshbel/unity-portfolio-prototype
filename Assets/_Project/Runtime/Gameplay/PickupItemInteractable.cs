@@ -1,3 +1,4 @@
+using System;
 using ExtractionRoom.Interaction;
 using ExtractionRoom.Inventory;
 using ExtractionRoom.Items;
@@ -25,7 +26,7 @@ namespace ExtractionRoom.Gameplay
         [Inject]
         public void Construct(IInventoryService inventory)
         {
-            inventoryService = inventory;
+            inventoryService = inventory ?? throw new ArgumentNullException(nameof(inventory));
         }
 
         public override void Interact()

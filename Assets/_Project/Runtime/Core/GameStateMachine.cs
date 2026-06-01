@@ -1,3 +1,4 @@
+using System;
 using R3;
 
 namespace ExtractionRoom.Core
@@ -9,7 +10,7 @@ namespace ExtractionRoom.Core
 
         public GameStateMachine(IEventBus eventBus)
         {
-            this.eventBus = eventBus;
+            this.eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
         }
 
         public GameState CurrentState => currentState.Value;

@@ -19,7 +19,14 @@ namespace ExtractionRoom.Player
         [Inject]
         public void Construct(IEventBus eventBus, IGameStateMachine stateMachine)
         {
-            gameStateMachine = stateMachine;
+            if (eventBus == null)
+            {
+                throw new ArgumentNullException(nameof(eventBus));
+            }
+
+            gameStateMachine = stateMachine ?? throw new ArgumentNullException(nameof(stateMachine));
+            deathSubscription?.Dispose();
+            Health?.Dispose();
             Health = new HealthModel(maximumHealth, eventBus);
             deathSubscription = eventBus.Subscribe<EntityDiedEvent>(OnEntityDied);
         }
