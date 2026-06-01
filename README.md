@@ -11,7 +11,7 @@ organization in a compact vertical slice.
 
 The current version is a compact playable engineering slice. It defines the
 project structure, assembly boundaries, dependency injection services, domain
-models, a placeholder gameplay scene, a reactive UGUI HUD, and project
+models, a minimal legally safe gameplay scene, a reactive UGUI HUD, and project
 documentation.
 
 ## Implemented Features
@@ -96,9 +96,9 @@ The scene is also generated reproducibly from the Unity Editor menu:
 
 ## Gameplay Loop
 
-1. Collect the three blue Fuse pickups.
-2. Activate the dark generator cylinder.
-3. Reach the cyan extraction zone.
+1. Collect the three blue Fuse pickups with white contact bands.
+2. Activate the dark generator with its status light.
+3. Reach the orange extraction zone.
 4. Avoid the red enemy or it can reduce player health and trigger the lose UI.
 
 The green pickup is a Medkit inventory item and the yellow pickup is a Keycard
@@ -107,6 +107,6 @@ using them is outside the current vertical-slice scope.
 
 ## Screenshots And GIF
 
-Media capture is not committed yet. The current scene uses inspectable Unity
-primitive placeholders so the playable flow can be reviewed directly in the
-Editor.
+Media capture is not committed yet. The intentionally minimal content pass uses
+inspectable Unity primitives and simple project materials so the playable flow
+can be reviewed directly in the Editor without third-party art dependencies.

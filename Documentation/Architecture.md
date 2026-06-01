@@ -168,9 +168,15 @@ scene injection roots.
 
 The room contains a player capsule, top-down camera, reactive HUD canvas, three
 blue Fuse pickups, a green Medkit pickup, a yellow Keycard pickup, a dark
-generator cylinder, a cyan extraction trigger, and one red enemy capsule.
-Walls, crates, platform markers, floor, and lighting use Unity primitives so
+generator with an activation light, an orange extraction trigger, and one red
+enemy capsule. Walls, crates, utility pipes, lamps, platform markers, floor,
+labels, and extraction markers use Unity primitives or built-in resources so
 the repository remains asset-license safe and easy to inspect.
+
+The lightweight content pass stays inside scene composition and presentation
+components. It does not move gameplay decisions into decorative objects. The
+generator light observes the existing activation event, while objective
+progress remains owned by the domain service.
 
 ## Reactive UGUI HUD
 
